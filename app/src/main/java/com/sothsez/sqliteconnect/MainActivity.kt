@@ -38,11 +38,15 @@ class MainActivity : AppCompatActivity(), TitleAdapter.TitleInterface {
 
         binding.btnCreate.setOnClickListener {
             insertItem()
+            readDatabase()
+
             updateRecyclerView()
         }
 
         binding.btnUpdate.setOnClickListener {
             updateItem()
+            readDatabase()
+
             updateRecyclerView()
         }
 
@@ -53,6 +57,8 @@ class MainActivity : AppCompatActivity(), TitleAdapter.TitleInterface {
 
         binding.btnDelete.setOnClickListener {
             deleteItem()
+            readDatabase()
+
             updateRecyclerView()
         }
 
@@ -114,8 +120,8 @@ class MainActivity : AppCompatActivity(), TitleAdapter.TitleInterface {
 
             val db = dbHelper.readableDatabase
 
-            val selector = "${FeedEntry.COLUMN_NAME_TITLE} = " + binding.etTitle.text.toString()
-
+            val selector = "${FeedEntry.COLUMN_NAME_TITLE} = \"" + binding.etTitle.text.toString() + "\""
+            Log.d("TAGG", "searchDatabase: "+"${FeedEntry.COLUMN_NAME_TITLE} = \"" + binding.etTitle.text.toString() + "\"")
             val cursor = db.query(
                 FeedEntry.TABLE_NAME,   // The table to query
                 null,             // The array of columns to return (pass null to get all)
@@ -136,6 +142,7 @@ class MainActivity : AppCompatActivity(), TitleAdapter.TitleInterface {
                         getString(getColumnIndex("subtitle"))
                     )
                     datasList.add(item)
+                    Log.d("TAGG", "searchDatabase: "+ item.id + " : " + item.title)
                 }
             }
             cursor.close()
@@ -192,7 +199,6 @@ class MainActivity : AppCompatActivity(), TitleAdapter.TitleInterface {
         val recyclerViewTop =
             (binding.recyclerName.layoutManager as LinearLayoutManager)?.findFirstVisibleItemPosition()
 
-        readDatabase()
         binding.recyclerName.adapter = TitleAdapter(datasList, this)
         binding.recyclerName.scrollToPosition(recyclerViewTop)
     }
